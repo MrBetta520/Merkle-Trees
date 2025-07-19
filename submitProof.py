@@ -159,8 +159,8 @@ def sign_challenge(challenge):
     # TODO YOUR CODE HERE
     eth_encoded_msg = eth_account.messages.encode_defunct(text=challenge)
     eth_sig_obj = eth_account.Account.sign_message(eth_encoded_msg, private_key=eth_sk)
-
-    return addr, eth_sig_obj.signature.hex()
+    signature_hex = eth_sig_obj.signature.hex() if hasattr(eth_sig_obj.signature, 'hex') else eth_sig_obj.signature
+    return addr, signature_hex
 
 
 def send_signed_msg(proof, random_leaf):
