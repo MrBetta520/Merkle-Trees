@@ -181,12 +181,15 @@ def send_signed_msg(proof, random_leaf):
     transaction = contract.functions.submit(proof, random_leaf).build_transaction({
         'from': acct.address,
         'nonce': nonce,
-        'gas': 200000,
+        'gas': 300000,
         'gasPrice': w3.eth.gas_price,
     })
-    signed_txn = acct.sign_transaction(transaction)
-
-    tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+    signed_txn = w3.eth.account.sign_transaction(transaction, private_key=acct.key)
+    
+    try:
+        tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+    except AttributeError:
+        tx_hash = w3.eth.send_raw_transaction(signed_txn.raw_transaction)
 
     return tx_hash.hex()
 
